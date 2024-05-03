@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SecurityCustomProvider:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SecurityCustomProvider_jar</output-path>
+    <root id="archive" name="SecurityCustomProvider.jar">
+      <element id="module-output" name="SecurityCustomProvider" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Kafka/recoveryJars/bcprov-jdk18on-1.78.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Kafka/recoveryJars/bcutil-jdk18on-1.78.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Kafka/recoveryJars/kafka-clients-7.6.0-ccs.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Kafka/recoveryJars/bcpkix-jdk18on-1.78.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Kafka/recoveryJars/bctls-jdk18on-1.78.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -22,61 +22,28 @@ public class BouncyJsseSecurityProvider implements SecurityProviderCreator {
         }
 
         try {
-//            // Crear un SSLContext con BCJSSE
-//            SSLContext sslContext = SSLContext.getInstance("TLS", Security.getProvider(BouncyCastleJsseProvider.PROVIDER_NAME).getName());
-//
-//
-//            // Configurar el SSLContext con los parámetros necesarios
-//            SecureRandom secureRandom = new SecureRandom();
-//            sslContext.init(null, null, secureRandom);
-//
-//
-//            // Obtener un socket factory del SSLContext
-//            SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-//
-//            // Crear un socket con el socket factory
-//            SSLSocket socket = (SSLSocket) socketFactory.createSocket();
-//
-//            // Obtener una instancia de BCSSLSocket
-//            BCSSLSocket bcSslSocket = (BCSSLSocket) socket;
-//
-//            // Crear los parámetros SSL
-//            BCSSLParameters sslParams = new BCSSLParameters();
-
-            // Establecer el grupo de nombres deseado
-//        String namedGroup1 = String.valueOf(NamedGroup.OQS_mlkem512);
-//        String namedGroup2 = String.valueOf(NamedGroup.OQS_mlkem768);
-//        String namedGroup3 = String.valueOf(NamedGroup.OQS_mlkem1024);
-//        String namedGroup4 = String.valueOf(NamedGroup.DRAFT_mlkem768);
-//        String namedGroup5 = String.valueOf(NamedGroup.DRAFT_mlkem1024);
-
-        // Establecer el grupo de nombres deseado
-            String prueba = NamedGroup.OQS_mlkem512;
+            // KEM Post Quantum
             String mlkem512 = "OQS_mlkem512";
             String mlkem768 = "OQS_mlkem768";
             String mlkem1024 = "OQS_mlkem1024";
             String Draft_mlkem768 = "DRAFT_mlkem768";
             String Draft_mlkem1024 = "DRAFT_mlkem1024";
 
-        // Construir la cadena de grupos de nombres
-            String namedGroups = String.join(",", mlkem512, mlkem768, mlkem1024, Draft_mlkem768, Draft_mlkem1024);
+            // KEM Clásicos
+            String x25519 = "x25519";
+            String x448 = "x448";
+            String brainpoolP256r1tls13 = "brainpoolP256r1tls13";
+            String brainpoolP384r1tls13 = "brainpoolP384r1tls13";
+            String brainpoolP512r1tls13 = "brainpoolP512r1tls13";
 
-            // Establecer la propiedad del sistema jdk.tls.namedGroups
+            String namedGroups = String.join(",", mlkem512, mlkem768, mlkem1024, Draft_mlkem768, Draft_mlkem1024,
+                    x25519, x448, brainpoolP256r1tls13, brainpoolP384r1tls13, brainpoolP512r1tls13);
+
             System.setProperty("jdk.tls.namedGroups", namedGroups);
-            //System.setProperty("jdk.tls.namedGroups", "OQS_mlkem768, OQS_mlkem512, OQS_mlkem1024, DRAFT_mlkem768, DRAFT_mlkem1024");
-
-//            //sslParams.setNamedGroups(new String[]{namedGroup});
-//            sslParams.setNamedGroups(new String[]{namedGroup1, namedGroup2, namedGroup3, namedGroup4, namedGroup5});
-//
-//
-//            // Establecer los parámetros SSL en el socket BCSSLSocket
-//            bcSslSocket.setParameters(sslParams);
 
         }catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Se produjo un error al configurar el proveedor de seguridad", e);
         }
-
-
 
     }
 

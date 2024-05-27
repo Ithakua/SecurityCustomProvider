@@ -20,6 +20,7 @@ public class NamedGroupNames{
         String secp521r1 = NamedGroup.getName(NamedGroup.secp521r1);
 
         return new String[]{mlkem512, mlkem768, mlkem1024, x448, x25519, secp256r1, secp384r1, secp521r1};
+//        return new String[]{mlkem512, mlkem768, mlkem1024};
 
     }
 }

@@ -19,7 +19,8 @@ public class BouncyJsseSecurityProvider implements SecurityProviderCreator {
     @Override
     public void configure(Map<String, ?> config) {
         // Añade el proveedor BCJSSE
-        Security.addProvider(new BouncyCastleJsseProvider());
+            Security.addProvider(new BouncyCastleJsseProvider());
+
         try {
             // Carga los grupos de algoritmos
             String[] allNames = NamedGroupNames.getAllNames();
@@ -33,8 +34,8 @@ public class BouncyJsseSecurityProvider implements SecurityProviderCreator {
     @Override
     public Provider getProvider() {
         // Añade el proveedor BCJSSE en caso de que no esté cargado
-        if (Security.getProvider(BouncyCastlePQCProvider.PROVIDER_NAME) == null) {
-            Security.addProvider(new BouncyCastlePQCProvider());
+        if (Security.getProvider(BouncyCastleJsseProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastleJsseProvider());
         }
         return Security.getProvider(BouncyCastleJsseProvider.PROVIDER_NAME);
     }

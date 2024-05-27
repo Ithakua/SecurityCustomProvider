@@ -2,7 +2,6 @@ package org.upm.tfg.securityCustomProvider.sslProv;
 
 import org.apache.kafka.common.security.auth.SecurityProviderCreator;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
-import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
 import org.upm.tfg.securityCustomProvider.config.NamedGroupNames;
 
 import java.security.*;

@@ -6,6 +6,7 @@ import org.bouncycastle.jsse.BCSSLSocket;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
 import org.bouncycastle.tls.NamedGroup;
+import org.upm.tfg.securityCustomProvider.config.NamedGroupNames;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
@@ -26,46 +27,31 @@ public class BouncyJsseSecurityProvider_Modern implements SecurityProviderCreato
     @Override
     public void configure(Map<String, ?> config) {
 
-        if (Security.getProvider(BouncyCastleJsseProvider.PROVIDER_NAME) == null) {
             Security.addProvider(new BouncyCastleJsseProvider());
-        }
 
         try {
-            // Crear un SSLContext con BCJSSE
             SSLContext sslContext = SSLContext.getInstance("TLS", Security.getProvider(BouncyCastleJsseProvider.PROVIDER_NAME).getName());
 
-            // Configurar el SSLContext con los parámetros necesarios
             SecureRandom secureRandom = new SecureRandom();
             sslContext.init(null, null, secureRandom);
 
-
-            // Obtener un socket factory del SSLContext
             SSLSocketFactory socketFactory = sslContext.getSocketFactory();
 
-            // Crear un socket con el socket factory
             SSLSocket socket = (SSLSocket) socketFactory.createSocket();
 
-            // Obtener una instancia de BCSSLSocket
             BCSSLSocket bcSslSocket = (BCSSLSocket) socket;
 
-            // Crear los parámetros SSL
             BCSSLParameters sslParams = new BCSSLParameters();
 
-            // Establecer el grupo de nombres deseado
-            String namedGroup1 = String.valueOf(NamedGroup.OQS_mlkem512);
-            String namedGroup2 = String.valueOf(NamedGroup.OQS_mlkem768);
-            String namedGroup3 = String.valueOf(NamedGroup.OQS_mlkem1024);
-            String namedGroup4 = String.valueOf(NamedGroup.DRAFT_mlkem768);
-            String namedGroup5 = String.valueOf(NamedGroup.DRAFT_mlkem1024);
+            String[] allNames = NamedGroupNames.getAllNames();
 
-            sslParams.setNamedGroups(new String[]{namedGroup1, namedGroup2, namedGroup3, namedGroup4, namedGroup5});
+            sslParams.setNamedGroups(allNames);
 
             bcSslSocket.setParameters(sslParams);
 
         }catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Se produjo un error al configurar el proveedor de seguridad", e);
         }
-
 
 
     }

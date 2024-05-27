@@ -15,6 +15,11 @@ public class NamedGroupNames{
         String x448 = NamedGroup.getName(NamedGroup.x448);
         String x25519 = NamedGroup.getName(NamedGroup.x25519);
 
-        return new String[]{mlkem512, mlkem768, mlkem1024, x448, x25519};
+        String secp256r1 = NamedGroup.getName(NamedGroup.secp256r1);
+        String secp384r1 = NamedGroup.getName(NamedGroup.secp384r1);
+        String secp521r1 = NamedGroup.getName(NamedGroup.secp521r1);
+
+        return new String[]{mlkem512, mlkem768, mlkem1024, x448, x25519, secp256r1, secp384r1, secp521r1};
+
     }
 }

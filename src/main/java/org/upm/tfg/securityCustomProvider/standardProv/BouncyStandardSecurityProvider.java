@@ -10,7 +10,7 @@ import java.util.Map;
 public class BouncyStandardSecurityProvider implements SecurityProviderCreator {
     @Override
     public void configure(Map<String, ?> config) {
-        // Specify config if necessary
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Override

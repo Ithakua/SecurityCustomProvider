@@ -4,6 +4,7 @@ import org.apache.kafka.common.security.auth.SecurityProviderCreator;
 import org.bouncycastle.jsse.BCSSLParameters;
 import org.bouncycastle.jsse.BCSSLSocket;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
+import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
 import org.bouncycastle.tls.NamedGroup;
 
 import javax.net.ssl.SSLContext;
@@ -71,6 +72,9 @@ public class BouncyJsseSecurityProvider_Modern implements SecurityProviderCreato
 
     @Override
     public Provider getProvider() {
+        if (Security.getProvider(BouncyCastlePQCProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastlePQCProvider());
+        }
         return Security.getProvider(BouncyCastleJsseProvider.PROVIDER_NAME);
     }
 }

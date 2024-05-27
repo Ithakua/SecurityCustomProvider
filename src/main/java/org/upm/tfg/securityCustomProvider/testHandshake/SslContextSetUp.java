@@ -24,39 +24,33 @@ public class SslContextSetUp {
 
     public void configureAndRun(String[] groups, int iterations) throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, CertificateException, NoSuchProviderException {
         // Ruta al archivo del certificado de la CA
-        String caCertPath = System.getProperty("user.home") + "/Documents/Kafka/SandBox_Kafka/post-quantum-support-kafka/certificates/ca/ca.crt";
-
-        // Dirección del servidor y puerto
+        String caCertPath = System.getProperty("user.dir") + "/../post-quantum-support-kafka/certificates/ca/ca.crt";
         String host = "localhost";
         int port = 9093;
 
-        // Archivo .csv para guardar los resultados
-        try (PrintWriter writer = new PrintWriter(new FileWriter("handshake_times.csv"))) {
-            // Escribir el encabezado
+        // Genera el archivo .csv para guardar los resultados en la carpeta testing del proyecto Kafka
+        try (PrintWriter writer = new PrintWriter(new FileWriter(System.getProperty("user.dir") + "/../post-quantum-support-kafka/testing/handshake_times.csv"))) {
             writer.print("N");
             for (String group : groups) {
                 writer.print("," + group);
             }
             writer.println();
 
-            // Realizar las iteraciones
             for (int i = 0; i < iterations; i++) {
-                writer.print(i);
-                for (String group : groups) {
-                    long handshakeTime = performHandshake(caCertPath, host, port, group);
-                    writer.printf(",%.6f", handshakeTime / 1_000_000.0);
+                // Primera iteración no se guarda para mejorar las mediciones
+                if (i > 0) {
+                    writer.print(i);
+                    for (String group : groups) {
+                        long handshakeTime = performHandshake(caCertPath, host, port, group);
+                        writer.printf(",%.6f", handshakeTime / 1_000_000.0);
+                    }
+                    writer.println();
+                } else {
+                    // Solo realizar el handshake para calentar la conexión
+                    for (String group : groups) {
+                        performHandshake(caCertPath, host, port, group);
+                    }
                 }
-                writer.println();
-
-//                // Forzar la recolección de basura (opcional) -> No se aprecian resultados significativos
-//                System.gc();
-//                // Esperar un momento para asegurar la recolección de basura
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException e) {
-//                    Thread.currentThread().interrupt();
-//                }
-
             }
         }
     }
@@ -98,13 +92,12 @@ public class SslContextSetUp {
                 bcSslSocket.setParameters(bcsslParameters);
             }
 
+            // Medir el tiempo de handshake
             long startTime = System.nanoTime();
             socket.startHandshake();
             long endTime = System.nanoTime();
             handshakeTime = endTime - startTime;
 
-            // Cerrar la conexión después del handshake (reduntante)
-            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -11,7 +11,7 @@ public class BouncyPqcSecurityProvider implements SecurityProviderCreator {
 
     @Override
     public void configure(Map<String, ?> config) {
-        // Specify config if necessary
+        Security.addProvider(new BouncyCastlePQCProvider());
     }
 
     @Override

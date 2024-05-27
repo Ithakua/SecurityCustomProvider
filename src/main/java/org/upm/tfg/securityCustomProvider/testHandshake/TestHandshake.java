@@ -16,7 +16,7 @@ public class TestHandshake {
         Security.addProvider(new BouncyCastleJsseProvider());
 
         String[] groups = NamedGroupNames.getAllNames();
-        int iterations = 100;
+        int iterations = 101;
 
         try {
             SslContextSetUp sslContext = new SslContextSetUp();

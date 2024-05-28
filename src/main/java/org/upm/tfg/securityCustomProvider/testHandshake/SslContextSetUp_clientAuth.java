@@ -30,7 +30,7 @@ public class SslContextSetUp_clientAuth {
         int port = 9093;
 
         // Genera el archivo .csv para guardar los resultados en la carpeta testing del proyecto Kafka
-        try (PrintWriter writer = new PrintWriter(new FileWriter(System.getProperty("user.dir") + "/../post-quantum-support-kafka/testing/handshake_times_clientAuth1.csv"))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(System.getProperty("user.dir") + "/../post-quantum-support-kafka/testing/handshake_times.csv"))) {
             writer.print("N");
             for (String group : groups) {
                 writer.print("," + group);

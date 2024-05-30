@@ -1,66 +1,67 @@
 # Custom Security-Provider Kafka
 
-Este repositorio es parte de un trabajo final de grado y ofrece un proyecto Java capaz de cargar proveedores de seguridad con soporte de criptografía post-cuántica para [Apache Kafka](https://kafka.apache.org/) utilizando la librería [Bouncy Castle](https://www.bouncycastle.org/). También incluye las herramientas para poder medir el tiempo de handshake una vez la aplicación está desplegada.
+This repository is part of a Bachelor Thesis and consists of a Java project capable of loading security providers with post-quantum cryptography support in [Apache Kafka](https://kafka.apache.org/) using the [Bouncy Castle](https://www.bouncycastle.org/) library. It also includes tools to measure handshake time once Kafka is deployed.
 
-## ¿Qué contiene el proyecto?
+## What's in the Project?
 
-La estructura del proyecto es la siguiente:
+The structure of the project is as follows:
 
-- **normalProv**: Este paquete incluye la clase que permite añadir el proveedor _Bouncy Castle_ en Kafka.
-- **pqcProv**: Paquete que incluye la clase que permite añadir el proveedor _Bouncy Castle PQ_ en Kafka.
-- **sslProv**: Este paquete incluye la clase que permite añadir el proveedor _Bouncy Castle JSSE_ en Kafka.
-- **config**: Incluye la clase `NamedGroupsConfig` que permite cargar los grupos criptográficos disponibles del proveedor BouncyCastleJSSEProvider.
-- **testHandshake**: Paquete que incluye las herramientas necesarias para medir el tiempo de handshake con el servidor de N peticiones, tanto con autenticación de cliente como sin autorización de cliente.
+- **normalProv**: This package includes the class that adds the _BouncyCastleProvider_ to Kafka.
+- **pqcProv**: Package that includes the class that adds the _BouncyCastlePQCProvider_ to Kafka.
+- **sslProv**: This package includes the class that adds the _BouncyCastleJSSEprovider_ to Kafka.
+- **config**: Includes the `NamedGroupsConfig` class that loads the available cryptographic groups from the _BouncyCastleJSSEProvider_.
+- **testHandshake**: Package that includes the tools necessary to measure the handshake time with the server for N requests, both with client authentication and without client authentication.
 
-### Consideraciones importantes
+### Important Considerations
 
-_El gestor de dependencias del proyecto es Maven, y la versión de BouncyCastle con la que se ha trabajado en este proyecto es la `1.78.1`. En caso de que se quiera cambiar de versión, solo habría que modificar el `pom.xml` y cambiarla por la que se necesite._
+_The project's dependency manager is Maven, and the version of BouncyCastle used in this project is 1.78.1. If you want to change the version, simply modify the `pom.xml` and replace it with the desired version._
 
-## Cómo generar los JAR
+## How to Generate the JARs
 
-El principal propósito de este proyecto es generar los archivos .jar que permitan a la infraestructura del repositorio [post-quantum-support-kafka](https://github.com/Ithakua/post-quantum-support-kafka) implementar los proveedores de seguridad necesarios para poder utilizar los grupos criptográficos que permiten las comunicaciones ML-KEM. Para ello, se tiene que generar un JAR del proyecto que incluya las dependencias necesarias (uber-jar).
+The main purpose of this project is to generate the `.jar` files that allow the infrastructure of the [post-quantum-support-kafka](https://github.com/Ithakua/post-quantum-support-kafka) repository to implement the necessary security providers to use the cryptographic groups that enable ML-KEM communications. To do this, you need to generate a JAR from the project that includes the necessary dependencies (uber-jar).
 
-Con este JAR, si se guarda en el directorio `./KafkaApp/libs` del repositorio `post-quantum-support-kafka`, permite desplegar una infraestructura Kafka con un proveedor personalizado de seguridad y un proveedor personalizado JSSE:
+With this JAR, if saved in the `./KafkaApp/libs` directory of the `post-quantum-support-kafka` repository, you can deploy a Kafka infrastructure with a custom security provider and a custom JSSE provider:
 
-- **CustomSecurityProvider_mlkem.jar**: Nombre al que apuntan las variables de entorno Docker para desplegar el servidor de Kafka con una configuración ML-KEM.
-- **CustomSecurityProvider_allgroups.jar**: Nombre de referencia para una configuración KEM mixta que incluya tanto grupos KEM clásicos como KEM post-cuánticos.
+- **CustomSecurityProvider_mlkem.jar**: Name referenced by the Docker environment variables to deploy the Kafka server with an ML-KEM configuration.
+- **CustomSecurityProvider_allgroups.jar**: Reference name for a mixed KEM configuration that includes both classic KEM groups and post-quantum KEM groups.
 
-### Consideraciones importantes
+### Important Considerations
 
-_Los grupos que se van a cargar en la configuración de Kafka se encuentran en la clase `NamedGroupsConfig`. En caso de que se quieran utilizar otros adicionales, se debe indicar desde esa clase._
+_The groups to be loaded in the Kafka configuration are in the `NamedGroupsConfig` class. If you want to use additional groups, you must specify them in this class._
 
-_Al trabajar en este proyecto y hacer pruebas, es normal que algunos .jar generados den problema a la hora del despliegue. Si se detecta un internal_error(80) alert o da problemas en alguno de los handshakes cuando se ejecuta el test, se recomienda regenerar el JAR y volver a cargarlo. Si el error persiste, se recomienda recargar las dependencias de Maven._
+_When working on this project and testing, it's common for some generated JARs to cause deployment issues. If an `internal_error(80) alert` is detected or there are problems in some of the handshakes when running the test, it's recommended to regenerate the JAR and reload it. If the error persists, it's recommended to reload the Maven dependencies._
 
-## Cómo medir los tiempos de handshake
+## How to Measure Handshake Times
 
-Para poder hacer uso de esta funcionalidad, se necesita tener descargada y desplegada la infraestructura Kafka del repositorio `post-quantum-support-kafka`.
+To use this functionality, you need to have the Kafka infrastructure from the `post-quantum-support-kafka` repository downloaded and deployed.
 
-Una vez desplegado el servidor de Kafka y en función de si el parámetro `KAFKA_SSL_CLIENT_AUTH: 'required'` del docker-compose.yaml está activo, se puede hacer uso de dos herramientas:
+Once the Kafka server is deployed, and depending on whether the `KAFKA_SSL_CLIENT_AUTH: 'required'` parameter in the docker-compose.yaml is active, you can use two tools:
 
-- **TestHandshake**: Esta herramienta permite probar los algoritmos indicados en la clase `NamedGroupsConfig`, generando N peticiones (parametro a seleccionar) al servidor y midiendo el tiempo de cada grupo.
-- **TestHandshake_clientAuth**: Es una modificación de la herramienta anterior y permite generar N peticiones al servidor con autenticación por parte de cliente.
+- **TestHandshake**: This tool allows testing the algorithms specified in the `NamedGroupsConfig` class, generating N (parameter to select) requests to the server and measuring the time for each group.
+- **TestHandshake_clientAuth**: A modification of the previous tool that allows generating N requests to the server with client authentication.
 
-Una vez finalizados todos los acuerdos Handshake, se podrá ver el `.csv` generado en la carpeta `./testing` del repositorio `./post-quantum-support-kafka`, que se guardará con el nombre `handshake_times.csv`.
+Once all handshake agreements are completed, you can see the generated `.csv` in the `./testing` folder of the `./post-quantum-support-kafka` repository, saved as `handshake_times.csv`.
 
-### Consideraciones importantes
+### Important Considerations
 
-_Es importante tener en cuenta que estas clases miden el tiempo de handshake utilizando la librería de BouncyCastle. Lo más recomendable para evitar problemas es realizar las conexiones SSL con un servidor que utilice esta misma biblioteca como proveedor SSL._
+_It's important to note that these classes measure handshake time using BouncyCastle. To avoid issues, it's best to perform SSL connections with a server using this same library as the SSL provider._
 
-## Requisitos
+## Requirements
 
-Para utilizar esta aplicación, son necesarios los siguientes componentes:
+To use this application, the following components are necessary:
 
-### Necesarios
+### Necessary
 
-- **Java 11**: Por motivos de desarrollo, este proyecto solo funciona correctamente con esta versión.
-- [**post-quantum-support-kafka**](https://github.com/Ithakua/post-quantum-support-kafka): Este repositorio debe ser descargado al mismo nivel que el repositorio actual, de manera que:
+- **Java 11**: For development reasons, this project only works correctly with this version.
+- [**post-quantum-support-kafka**](https://github.com/Ithakua/post-quantum-support-kafka): This repository must be downloaded at the same level as the current repository, so that:
 
-```
+```sh
 $ ls
 post-quantum-support-kafka/
 custom-security-provider-kafka/
 ```
 
-### Opcionales
+### Optional
 
-- **IDE IntelliJ**: Al tratarse de un proyecto Java y haberse usado durante el desarrollo del proyecto, es una recomendación particular utilizar el mismo IDE para reproducir el mismo entorno.
+- **IDE IntelliJ**: As this is a Java project and was used during its development, it is particularly recommended to use the same IDE to reproduce the same environment.
+
